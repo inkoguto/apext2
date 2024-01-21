@@ -11,8 +11,6 @@ struct Dir {
     struct Dir * next;
 };
 
-void dir(struct Dir * dir, char * buff);
-
-void get_root_dir(Inode * inode, struct Superblock * sb, Bgd_table * bgd_table,  char * location);
+void get_dir_data(Inode * inode);
 
 #endif

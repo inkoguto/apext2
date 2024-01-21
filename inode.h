@@ -1,7 +1,6 @@
 #ifndef INODE_H
 #define INODE_H
-#include "superblock.h"
-#include "bgd_table.h"
+#include "fs_metadata.h"
 
 typedef struct {
     short int i_mode;
@@ -25,5 +24,7 @@ typedef struct {
 } Inode;
 
 Inode * get_first_inode(struct Superblock * sb, Bgd_table * bgd_table, char * location);
+
+Inode * get_inode(int inode_index);
 
 #endif

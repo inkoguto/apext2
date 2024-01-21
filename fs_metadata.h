@@ -1,5 +1,5 @@
-#ifndef SUPERBLOCK_H
-#define SUPERBLOCK_H
+#ifndef FS_METDATA_H
+#define FS_METDATA_H
 
 struct Superblock
 {
@@ -51,6 +51,20 @@ struct Superblock
 	int s_default_mount_options;
 	int s_first_meta_bg;
 };
-void load_superblock(struct Superblock * sb, char * location);
+
+typedef struct {
+    int bg_block_bitmap;
+    int bg_inode_bitmap;
+    int bg_inode_table;
+    int bg_free_blocks_count;
+    int bg_free_inodes_count;
+    int bg_used_dirs_count;
+    int bg_pad;
+    char bg_reserved[12];
+} Bgd_table;
+
+Bgd_table * get_bgd_table();
+
+struct Superblock * get_superblock();
 
 #endif

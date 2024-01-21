@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "superblock.h"
+#include "fs_metadata.h"
 
 char* decode(char * uuid ) {
     char *buff = malloc((2 * strlen(uuid) + 1) * sizeof(char));

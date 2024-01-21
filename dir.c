@@ -3,14 +3,13 @@
 #include <string.h>
 #include "dir.h"
 #include "inode.h"
-#include "superblock.h"
-#include "bgd_table.h"
-#include "node.h"
+#include "fs_metadata.h"
+#include "reader.h"
 
 void static render(struct Dir * dir) {
     struct Dir * current = dir;
     while (current != NULL) {
-        puts(current->name);
+        printf("name: %s - inode: %d\n", current->name, current->inode);
         current = current->next;
     }    
 }
@@ -47,17 +46,15 @@ void cleanup(struct Dir * head) {
     }
 }
 
-void get_root_dir(Inode * inode, struct Superblock * sb, Bgd_table * bgd_table,  char * location) {
+void get_dir_data(Inode * inode) {
+    struct Superblock * sb = get_superblock();
     int block_size = 1024 << sb->s_log_block_size;
     char buff[block_size];
     struct Dir * directory = NULL;
     int block = inode->i_block[0];
-    FILE * fh;
-
-    fh = fopen(location, "rb");
-    fseek(fh, block * 1024, SEEK_SET);
-    fread(buff, block_size, 1, fh);
-    fclose(fh);
+   
+    read_fs(block * block_size, buff, block_size);
+    
     list(&directory, buff);
     
     if (directory == NULL) {
@@ -65,4 +62,5 @@ void get_root_dir(Inode * inode, struct Superblock * sb, Bgd_table * bgd_table, 
     }
     render(directory);
     cleanup(directory);
+    free(sb);
 }

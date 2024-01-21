@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "inode.h"
-#include "node.h"
-#include "superblock.h"
-#include "bgd_table.h"
+#include "reader.h"
+#include "fs_metadata.h"
+
 
 static void render(Inode * inode) {
     printf("Inode mode: %d\n", inode->i_mode);
@@ -14,27 +14,32 @@ static void render(Inode * inode) {
     printf("Data blocks: %d\n", inode->i_block[0]);
 }
 
-static int get_first_inode_location(struct Superblock *sb, Bgd_table * bgd_table) {
+static int get_inode_location(struct Superblock *sb, Bgd_table * bgd_table, int index) {
     int block_size = 1024 << sb->s_log_block_size;
 
-    return block_size * bgd_table->bg_inode_table + ((sb->s_first_ino - 1 ) % sb->s_inodes_per_group) * sb->s_inode_size;
+    return block_size * bgd_table->bg_inode_table + ((index - 1 ) % sb->s_inodes_per_group) * sb->s_inode_size;
 }
 
 Inode * get_first_inode(struct Superblock * sb, Bgd_table * bgd_table,  char * location) {
     Inode * inode = malloc(sizeof(Inode));
-    FILE * fh;
+    read_fs(get_inode_location(sb, bgd_table, sb->s_first_ino), inode, sizeof(Inode));
 
-	fh = fopen(location, "rb");
-    if (fh == NULL) {
-        perror("blad otwarcia pliku\n");
-        exit(1);
-    }
-	if (fseek(fh, get_first_inode_location(sb, bgd_table), SEEK_SET)) {
-		perror("could not fseek");
-		exit(1);
-	}
-	fread(inode, sizeof(Inode), 1, fh);
-	fclose(fh);
-    // render(inode);
+    render(inode);
+    return inode;
+}
+
+Inode * get_inode(int inode_index) {
+    Bgd_table * bgd_table;
+    struct Superblock * sb;
+    Inode * inode = malloc(sizeof(Inode));
+
+    sb = get_superblock();
+    bgd_table = get_bgd_table();
+
+    read_fs(get_inode_location(sb, bgd_table, inode_index), inode, sizeof(Inode));
+
+    free(bgd_table);
+    free(sb);
+
     return inode;
 }

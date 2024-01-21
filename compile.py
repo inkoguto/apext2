@@ -3,11 +3,11 @@ import os
 files = [
     "main.c",
     "inode.c",
-    "bgd_table.c",
-    "node.c",
     "renderer.c",
-    "superblock.c",
-    "dir.c"
+    "dir.c",
+    "reader.c",
+    "fs_metadata.c"
 ]
 
-os.system("gcc -g -Wall {}".format(" ".join(files)))
+os.system("clang -fsanitize=address -g -Wall {}".format(" ".join(files)))
+# os.system("clang -g -Wall {}".format(" ".join(files)))
