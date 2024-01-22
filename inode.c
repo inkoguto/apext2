@@ -20,11 +20,15 @@ static int get_inode_location(struct Superblock *sb, Bgd_table * bgd_table, int 
     return block_size * bgd_table->bg_inode_table + ((index - 1 ) % sb->s_inodes_per_group) * sb->s_inode_size;
 }
 
-Inode * get_first_inode(struct Superblock * sb, Bgd_table * bgd_table,  char * location) {
+Inode * get_first_inode() {
+    struct Superblock * sb = get_superblock();
+    Bgd_table * bgd_table = get_bgd_table();
     Inode * inode = malloc(sizeof(Inode));
     read_fs(get_inode_location(sb, bgd_table, sb->s_first_ino), inode, sizeof(Inode));
 
-    render(inode);
+    free(sb);
+    free(bgd_table);
+
     return inode;
 }
 

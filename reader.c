@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 char * get_location() {
-	return "disk.img";
+	return "/dev/sdc";
 }
 
 void read_fs(int offset, void * data, int data_size) {

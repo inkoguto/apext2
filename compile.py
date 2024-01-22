@@ -6,8 +6,9 @@ files = [
     "renderer.c",
     "dir.c",
     "reader.c",
-    "fs_metadata.c"
+    "fs_metadata.c",
+    "ui.c"
 ]
 
-os.system("clang -fsanitize=address -g -Wall {}".format(" ".join(files)))
+os.system("clang -fsanitize=address -g -Wall -lncurses {}".format(" ".join(files)))
 # os.system("clang -g -Wall {}".format(" ".join(files)))
