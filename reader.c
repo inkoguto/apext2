@@ -1,8 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "reader.h"
+
+char * file_location;
+
+void set_location(char * location) {
+	file_location = location;
+}
 
 char * get_location() {
-	return "/dev/sdc";
+	return file_location;
 }
 
 void read_fs(int offset, void * data, int data_size) {

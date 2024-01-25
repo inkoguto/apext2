@@ -5,9 +5,13 @@
 
 struct DirList * get_root_dir();
 
-void render_list();
+void handle_list(struct DirList * dir_list);
+
+void render_list(struct DirList * dir);
 
 void show_info(struct Dir * dir);
+
+struct DirList * switch_directory(int inode_idx);
 
 void ui() {
 	struct DirList * dir_list = get_root_dir();
@@ -15,23 +19,37 @@ void ui() {
 	cbreak();
 	keypad(stdscr, TRUE);
 	noecho();
-	render_list(dir_list);
-	getch();
-	endwin();
+	
+	handle_list(dir_list);
 	cleanup(dir_list->head);
+	free(dir_list);
+
+	clear();
+	endwin();
 }
 
 void render_list(struct DirList * dir_list) {
-	struct Dir * dir = dir_list->head;
-	int posX = 0, posY = 0, ch = 0;
 	Inode * inode;
-
+	struct Dir * dir = dir_list->head;
 	while (dir != NULL) {
-		printw("%s %10d\n", dir->name, dir->inode);
+		inode = get_inode(dir->inode);
+		printw("%s %10d\n", dir->name, inode->i_mode);
 		dir = dir->next;
+		free(inode);
 	}
-	dir = dir_list->head;
+}
+
+void handle_list(struct DirList * dir_list) {
+	struct Dir * dir = dir_list->head;
+	struct DirList * new_dir_list = NULL;
+	int inodex_idx = 0;
+	int posX = 0, posY = 0, ch = 0;
+	char * esc_info = "Nacisnij F10 aby wyjsc";
+
+	render_list(dir_list);
+	mvprintw(LINES-1, 0, "%s", esc_info);
 	move(posX, posY);
+
 	while (ch != KEY_F(10)) {
 		ch = getch();
 		if (ch == KEY_UP) {
@@ -48,12 +66,35 @@ void render_list(struct DirList * dir_list) {
 		}
 		if (ch == 10) {
 			clear();
-			inode = get_inode(dir->inode);
-			render_list(get_dir_data(inode));
+			inodex_idx = dir->inode;
+			if (new_dir_list != NULL) {
+				cleanup(new_dir_list->head);
+				free(new_dir_list);
+			}
+			new_dir_list = switch_directory(inodex_idx);
+			dir = new_dir_list->head;
+			posX = 0;
+		}
+		if (ch == KEY_F(10)) {
+			cleanup(dir);
+			free(new_dir_list);
+			return;
 		}
 		move(posX, posY);
 		refresh();
 	}
+}
+
+struct DirList * switch_directory(int inode_idx) {
+	Inode * inode = get_inode(inode_idx);
+	struct DirList * dir_list = get_dir_data(inode);
+
+	render_list(dir_list);
+
+	
+	free(inode);
+
+	return dir_list;
 }
 
 void show_info(struct Dir * dir) {

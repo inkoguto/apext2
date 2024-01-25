@@ -33,21 +33,21 @@ void append(struct DirList * dir_list, char * buff, int offset) {
         dir_list->head = current;
     }
     dir_list->tail = current;
-
-    printf("");
 }
 
-void list(struct DirList * dir_list, char * buff) {
+struct DirList * list(struct DirList * dir_list, char * buff) {
     int offset = 0;
     do {
         append(dir_list, buff, offset);
         offset = offset + (int) dir_list->tail->rec_len;
     } while (offset < 1024);
+
+    return dir_list;
 }
 
 void cleanup(struct Dir * head) {
     struct Dir * current = head;
-    struct Dir * next;
+    struct Dir * next = NULL;
     while (current != NULL) {
         next = current->next;
         free(current);
@@ -70,7 +70,6 @@ struct DirList * get_dir_data(Inode * inode) {
     struct Superblock * sb = get_superblock();
     int block_size = 1024 << sb->s_log_block_size;
     char buff[block_size];
-    struct Dir * dir;
     struct DirList * dir_list = malloc(sizeof(struct DirList));
     int block = inode->i_block[0];
 
@@ -83,8 +82,7 @@ struct DirList * get_dir_data(Inode * inode) {
     }
     read_fs(block * block_size, buff, block_size);
     
-    list(dir_list, buff);
-  //  render(dir_list->head);
+    dir_list = list(dir_list, buff);
     free(sb);
 
     return dir_list;
