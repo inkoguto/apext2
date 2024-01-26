@@ -11,8 +11,6 @@ void render_list(struct DirList * dir, struct Dir * active, WINDOW * window);
 
 WINDOW * show_info();
 
-
-
 struct DirList * switch_directory(int inode_idx);
 
 void initialize();
@@ -23,7 +21,7 @@ void ui() {
 	WINDOW *mainwin = NULL;
 	initialize();
     mainwin = newwin(LINES-3, COLS, 0, 0);
-
+	info_win = show_info();
 	wbkgdset(mainwin, COLOR_PAIR(2));
 	wclear(mainwin);
     box(mainwin, 0, 0);
