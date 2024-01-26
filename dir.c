@@ -6,14 +6,6 @@
 #include "fs_metadata.h"
 #include "reader.h"
 
-void static render(struct Dir * dir) {
-    struct Dir * current = dir;
-    while (current != NULL) {
-        printf("name: %s - inode: %d\n", current->name, current->inode);
-        current = current->next;
-    }    
-}
-
 void append(struct DirList * dir_list, char * buff, int offset) {
     struct Dir * current = malloc(sizeof(struct Dir));
     short int rec_len;
@@ -23,7 +15,7 @@ void append(struct DirList * dir_list, char * buff, int offset) {
         rec_len = sizeof(struct Dir);
     }
     memcpy(current, &buff[offset], rec_len);
-
+    current->name[current->name_len] = '\0';
     current->prev = dir_list->tail;
     current->next = NULL;
 
