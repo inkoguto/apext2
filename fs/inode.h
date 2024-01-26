@@ -1,7 +1,7 @@
 #ifndef INODE_H
 #define INODE_H
-#include "fs_metadata.h"
 #include <stdint.h>
+#include "fs_metadata.h"
 
 typedef struct {
     uint16_t i_mode;

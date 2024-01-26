@@ -11,14 +11,18 @@ void render_list(struct DirList * dir, struct Dir * active, WINDOW * window);
 
 WINDOW * show_info();
 
+
+
 struct DirList * switch_directory(int inode_idx);
 
 void initialize();
 
 void ui() {
 	struct DirList * dir_list = get_root_dir();
+	WINDOW *info_win = NULL;
+	WINDOW *mainwin = NULL;
 	initialize();
-    WINDOW *mainwin = newwin(LINES-3, COLS, 0, 0);
+    mainwin = newwin(LINES-3, COLS, 0, 0);
 
 	wbkgdset(mainwin, COLOR_PAIR(2));
 	wclear(mainwin);

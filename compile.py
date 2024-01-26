@@ -2,13 +2,13 @@ import os
 
 files = [
     "main.c",
-    "inode.c",
-    "renderer.c",
-    "dir.c",
-    "reader.c",
-    "fs_metadata.c",
-    "ui.c"
+    "fs/inode.c",
+    "fs/renderer.c",
+    "fs/dir.c",
+    "fs/reader.c",
+    "fs/fs_metadata.c",
+    "ui/ui.c"
 ]
 
-os.system("clang -fsanitize=address -g -Wall -lncurses {}".format(" ".join(files)))
+os.system("clang -fsanitize=address -g -Wall -I./ui -I./fs -lncurses {}".format(" ".join(files)))
 # os.system("clang -g -Wall {}".format(" ".join(files)))
