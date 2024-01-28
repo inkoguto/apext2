@@ -1,18 +1,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "dir.h"
+#include "entity.h"
 #include "inode.h"
 #include "fs_metadata.h"
 #include "reader.h"
 
 void append(struct DirList * dir_list, char * buff, int offset) {
-    struct Dir * current = malloc(sizeof(struct Dir));
+    struct Entity* current = malloc(sizeof(struct Entity));
     short int rec_len;
 
     memcpy(&rec_len, &buff[offset + 4], 2);
-    if (rec_len > sizeof(struct Dir)) {
-        rec_len = sizeof(struct Dir);
+    if (rec_len > sizeof(struct Entity)) {
+        rec_len = sizeof(struct Entity);
     }
     memcpy(current, &buff[offset], rec_len);
     current->name[current->name_len] = '\0';
@@ -37,9 +37,9 @@ struct DirList * list(struct DirList * dir_list, char * buff) {
     return dir_list;
 }
 
-void cleanup(struct Dir * head) {
-    struct Dir * current = head;
-    struct Dir * next = NULL;
+void cleanup(struct Entity* head) {
+    struct Entity* current = head;
+    struct Entity* next = NULL;
     while (current != NULL) {
         next = current->next;
         free(current);
@@ -49,7 +49,7 @@ void cleanup(struct Dir * head) {
 
 int count_entities(struct DirList * list) {
     int count = 0;
-    struct Dir * curr = list->head;
+    struct Entity* curr = list->head;
     while (curr != NULL) {
         curr = curr->next;
         count++;
@@ -68,14 +68,28 @@ struct DirList * get_dir_data(Inode * inode) {
     dir_list->tail = NULL;
     dir_list->head = NULL;
 
-    if ((inode->i_mode & 0xF000) != 0x4000) {
-        free(sb);
-        exit(1);
-    }
     read_fs(block * block_size, buff, block_size);
     
     dir_list = list(dir_list, buff);
     free(sb);
 
     return dir_list;
+}
+
+char * get_file_data(Inode * inode) {
+    struct Superblock *sb = get_superblock();
+    int block_size = 1024 << sb->s_log_block_size;
+    char * buff = malloc(block_size * sizeof(char));
+    char * content = NULL;
+    int idx = 0;
+
+    for (idx = 0; idx < 14; idx++) {
+        if (inode->i_block[idx] != 0) {
+            read_fs(inode->i_block[idx] * block_size, buff, block_size);
+            content = realloc(content, (idx+1) * block_size * sizeof(char));
+            strncpy(content + (idx * block_size), buff, block_size);
+        }
+    }
+
+    return content;
 }

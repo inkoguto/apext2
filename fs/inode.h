@@ -28,4 +28,8 @@ Inode * get_first_inode();
 
 Inode * get_inode(int inode_index);
 
+int is_file(int inode_idx);
+
+int is_directory(int inode_idx);
+
 #endif

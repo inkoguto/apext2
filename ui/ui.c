@@ -1,15 +1,14 @@
 #include <ncurses.h>
 #include <stdlib.h>
-#include "dir.h"
+#include "entity.h"
 #include "inode.h"
+#include "windows.h"
 
 struct DirList * get_root_dir();
 
 void handle_list(struct DirList * dir_list, WINDOW * window);
 
-void render_list(struct DirList * dir, struct Dir * active, WINDOW * window);
-
-WINDOW * show_info();
+void render_list(struct DirList * dir, struct Entity* active, WINDOW * window);
 
 struct DirList * switch_directory(int inode_idx);
 
@@ -19,13 +18,10 @@ void ui() {
 	struct DirList * dir_list = get_root_dir();
 	WINDOW *info_win = NULL;
 	WINDOW *mainwin = NULL;
+
 	initialize();
-    mainwin = newwin(LINES-3, COLS, 0, 0);
-	info_win = show_info();
-	wbkgdset(mainwin, COLOR_PAIR(2));
-	wclear(mainwin);
-    box(mainwin, 0, 0);
-    wrefresh(mainwin); 
+	mainwin = create_mainwin();
+	info_win = create_footer(); 
 
 	handle_list(dir_list, mainwin);
 
@@ -35,12 +31,13 @@ void ui() {
 	
 	free(dir_list);
 	delwin(mainwin);
+	delwin(info_win);
     endwin();
 }
 
-void render_list(struct DirList * dir_list, struct Dir * active, WINDOW * window) {
+void render_list(struct DirList * dir_list, struct Entity* active, WINDOW * window) {
 	Inode * inode;
-	struct Dir * dir = dir_list->head;
+	struct Entity* dir = dir_list->head;
 	
 	wclear(window);
 	
@@ -71,15 +68,15 @@ void initialize() {
 	init_pair(1, COLOR_RED, COLOR_WHITE);
 	init_pair(2, COLOR_RED, COLOR_BLUE);
 	init_pair(3, COLOR_MAGENTA, COLOR_CYAN);
-	bkgdset(COLOR_PAIR(3));
+	init_pair(4, COLOR_BLACK, COLOR_WHITE);
 	clear();
-	mvprintw(LINES -2, 10, "Nacisnij F10 aby wyjsc");
 	refresh();
 }
 
 void handle_list(struct DirList * dir_list, WINDOW * window) {
-	struct Dir * dir = dir_list->head;
+	struct Entity* dir = dir_list->head;
 	struct DirList * new_dir_list = NULL;
+	char * file_content = NULL;
 	int inodex_idx = 0;
 	int ch = 0;
 
@@ -98,13 +95,25 @@ void handle_list(struct DirList * dir_list, WINDOW * window) {
 			}
 		}
 		if (ch == 10) {
-			inodex_idx = dir->inode;
-			if (new_dir_list != NULL) {
-				cleanup(new_dir_list->head);
-				free(new_dir_list);
+			if (is_directory(dir->inode)) {
+				inodex_idx = dir->inode;
+				if (new_dir_list != NULL) {
+					cleanup(new_dir_list->head);
+					free(new_dir_list);
+				}
+				new_dir_list = switch_directory(inodex_idx);
+				dir = new_dir_list->head;
 			}
-			new_dir_list = switch_directory(inodex_idx);
-			dir = new_dir_list->head;
+		}
+		if (ch == KEY_F(3)) {
+			if (is_file(dir->inode)) {
+				file_content = get_file_data(get_inode(dir->inode));
+				create_content_window(file_content);
+				free(file_content);
+			}
+			if (is_directory(dir->inode)) {
+				create_content_window("dir");
+			}
 		}
 		if (ch == KEY_F(10)) {
 			if (new_dir_list != NULL) {
@@ -128,19 +137,6 @@ struct DirList * switch_directory(int inode_idx) {
 	free(inode);
 
 	return dir_list;
-}
-
-WINDOW * show_info() {
-	WINDOW * info_window = NULL;
-	info_window = subwin(stdscr, 3, COLS, LINES - 3, 0);
-	init_pair(3, COLOR_WHITE, COLOR_RED);
-	wbkgdset(info_window, COLOR_PAIR(3));
-	char * esc_info = "Nacisnij F10 aby wyjsc";
-
-	mvwprintw(info_window, 0, 0, "%s", esc_info);
-	wclear(info_window);
-	wrefresh(info_window);
-	return info_window;
 }
 
 struct DirList * get_root_dir() {

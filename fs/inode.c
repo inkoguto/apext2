@@ -47,3 +47,31 @@ Inode * get_inode(int inode_index) {
 
     return inode;
 }
+
+int is_file(int inode_idx) {
+    Inode * inode = get_inode(inode_idx);
+    
+    if ((inode->i_mode & 0xF000) != 0x8000) {
+        free(inode);
+        return 0;
+    }
+
+    free(inode);
+    return 1;
+}
+
+int is_directory(int inode_idx) {
+    Inode * inode = get_inode(inode_idx);
+
+    if ((inode->i_mode & 0xF000) != 0x4000) {
+        free(inode);
+        return 0;
+    }
+
+    free(inode);
+    return 1;
+}
+
+int is_symlink() {
+
+}

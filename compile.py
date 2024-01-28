@@ -4,10 +4,11 @@ files = [
     "main.c",
     "fs/inode.c",
     "fs/renderer.c",
-    "fs/dir.c",
+    "fs/entity.c",
     "fs/reader.c",
     "fs/fs_metadata.c",
-    "ui/ui.c"
+    "ui/ui.c",
+    "ui/windows.c"
 ]
 
 os.system("clang -fsanitize=address -g -Wall -I./ui -I./fs -lncurses {}".format(" ".join(files)))

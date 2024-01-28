@@ -4,7 +4,7 @@
 #include "fs_metadata.h"
 #include "renderer.h"
 #include "inode.h"
-#include "dir.h"
+#include "entity.h"
 #include "ui.h"
 #include "reader.h"
 
