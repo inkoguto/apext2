@@ -16,6 +16,8 @@ static void render(Inode * inode) {
 
 static int get_inode_location(struct Superblock *sb, Bgd_table * bgd_table, int index) {
     int block_size = 1024 << sb->s_log_block_size;
+    int block_group = (index - 1) / sb->s_inodes_per_group;
+    int local_inode = (index - 1) % sb->s_inodes_per_group;
 
     return block_size * bgd_table->bg_inode_table + ((index - 1 ) % sb->s_inodes_per_group) * sb->s_inode_size;
 }

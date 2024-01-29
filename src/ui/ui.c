@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include "entity.h"
 #include "inode.h"
-#include "windows.h"
+#include "footer.h"
+#include "file_content.h"
+#include "main_window.h"
 
 struct DirList * get_root_dir();
 
@@ -21,7 +23,7 @@ void ui() {
 
 	initialize();
 	mainwin = create_mainwin();
-	info_win = create_footer(); 
+	info_win = get_footer();
 
 	handle_list(dir_list, mainwin);
 

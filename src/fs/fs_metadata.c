@@ -15,12 +15,17 @@ struct Superblock * get_superblock()
 Bgd_table * get_bgd_table() {
     struct Superblock * sb;
     Bgd_table * table = malloc(sizeof(Bgd_table));
-    int block_size;
+    int block_size, idx;
 
     sb = get_superblock();
     block_size = 1024 << sb->s_log_block_size;
+    if (block_size == 1024) {
+        idx = 2 * block_size;
+    } else {
+        idx = block_size;
+    }
     
-    read_fs(2 * block_size, table, sizeof(Bgd_table));
+    read_fs(idx, table, sizeof(Bgd_table));
     free(sb);
     return table;
 }
