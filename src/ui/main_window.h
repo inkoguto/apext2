@@ -1,9 +1,6 @@
-#ifndef WINDOWS_H
+#ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
-#include <ncurses.h>
 
-WINDOW * create_mainwin();
-
-void create_content_window(char * content);
+void create_main_window();
 
 #endif

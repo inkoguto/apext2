@@ -1,5 +1,5 @@
-#ifndef DIR_H
-#define DIR_H
+#ifndef ENTITY_H
+#define ENTITY_H
 #include "inode.h"
 
 struct Entity{
