@@ -2,6 +2,6 @@
 #define FOOTER_H
 #include "ncurses.h"
 
-WINDOW * get_footer();
+WINDOW * get_footer(WINDOW * window);
 
 #endif

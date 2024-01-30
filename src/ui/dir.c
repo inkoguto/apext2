@@ -120,7 +120,7 @@ static struct DirList * get_root_dir() {
 	return dir;
 }
 
-WINDOW * create_dir_window() {
+void create_dir_window() {
     WINDOW * mainwin = NULL;
     mainwin = newwin(LINES-3, COLS, 0, 0);
 
@@ -129,5 +129,8 @@ WINDOW * create_dir_window() {
     box(mainwin, 0, 0);
     wrefresh(mainwin);
     
-    return mainwin;
+	display_files(mainwin);
+	wclear(mainwin);
+	wrefresh(mainwin);
+    delwin(mainwin);
 }

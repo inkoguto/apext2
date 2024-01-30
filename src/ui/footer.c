@@ -1,7 +1,7 @@
 #include <ncurses.h>
 
 
-WINDOW * get_footer() {
+WINDOW * get_footer(WINDOW * window) {
 	WINDOW * info_window = NULL;
 	char * esc_info = "Nacisnij F10 aby wyjsc | F3 to view file";
 	int width = COLS;
@@ -9,7 +9,7 @@ WINDOW * get_footer() {
 	int posX = LINES - 3;
 	int posY = 0;
 
-	info_window = subwin(stdscr, height, width, posX, posY);
+	info_window = subwin(window, height, width, posX, posY);
 	
 	wbkgdset(info_window, COLOR_PAIR(3));
     wclear(info_window);

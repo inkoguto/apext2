@@ -2,8 +2,6 @@
 #define DIR_H
 #include <ncurses.h>
 
-WINDOW * create_dir_window();
-
-void display_files(WINDOW * window);
+void create_dir_window();
 
 #endif
