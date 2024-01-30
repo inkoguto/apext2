@@ -6,20 +6,20 @@
 #include "fs_metadata.h"
 
 
-static void render(Inode * inode) {
-    printf("Inode mode: %d\n", inode->i_mode);
-    printf("Inode uuid: %d \n", inode->i_uid);
-    printf("Inode atime %d\n", inode->i_atime);
-    printf("Inode size: %d\n", inode->i_size);
-    printf("Data blocks: %d\n", inode->i_block[0]);
-}
+// static void render(Inode * inode) {
+//     printf("Inode mode: %d\n", inode->i_mode);
+//     printf("Inode uuid: %d \n", inode->i_uid);
+//     printf("Inode atime %d\n", inode->i_atime);
+//     printf("Inode size: %d\n", inode->i_size);
+//     printf("Data blocks: %d\n", inode->i_block[0]);
+// }
 
 static int get_inode_location(struct Superblock *sb, Bgd_table * bgd_table, int index) {
     int block_size = 1024 << sb->s_log_block_size;
-    int block_group = (index - 1) / sb->s_inodes_per_group;
+    //int block_group = (index - 1) / sb->s_inodes_per_group;
     int local_inode = (index - 1) % sb->s_inodes_per_group;
 
-    return block_size * bgd_table->bg_inode_table + ((index - 1 ) % sb->s_inodes_per_group) * sb->s_inode_size;
+    return block_size * bgd_table->bg_inode_table + local_inode * sb->s_inode_size;
 }
 
 Inode * get_first_inode() {
@@ -74,6 +74,6 @@ int is_directory(int inode_idx) {
     return 1;
 }
 
-int is_symlink() {
+// int is_symlink() {
 
-}
+// }

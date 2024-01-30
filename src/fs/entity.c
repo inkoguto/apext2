@@ -8,7 +8,7 @@
 
 void append(struct DirList * dir_list, char * buff, int offset) {
     struct Entity* current = malloc(sizeof(struct Entity));
-    short int rec_len = NULL;
+    short int rec_len = 0;
 
     memcpy(&rec_len, &buff[offset + 4], 2);
     if (rec_len > sizeof(struct Entity)) {

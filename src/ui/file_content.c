@@ -3,8 +3,8 @@
 void create_content_window(char * content) {
     WINDOW * outer;
     WINDOW * inner;
-    int posX = 0, posY = 0, ch = 0, lines = 0, content_idx = 0, consumed_chars = 0;
-    int progressX = 0, progressY = 0;
+    int posX = 0, posY = 0, ch = 0, lines = 0, content_idx = 0;
+    int progressY = 0;
     float progress = 0;
     int  inner_height, inner_width, outer_height, outer_width;
     char * PContent = content;

@@ -4,4 +4,6 @@
 
 WINDOW * create_dir_window();
 
+void display_files(WINDOW * window);
+
 #endif

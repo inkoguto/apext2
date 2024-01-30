@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <stdlib.h>
 #include "inode.h"
 #include "entity.h"
 #include "file_content.h"
@@ -22,7 +23,7 @@ static void render_list(struct DirList * dir_list, struct Entity* active, WINDOW
 		} else {
 		    wattron(window, COLOR_PAIR(2));
 		}
-		wprintw(window, "%s %*d\n", dir->name, COLS - 5 - dir->name_len, inode->i_mode);
+		wprintw(window, "%s %*d\n", dir->name, COLS - 5 - dir->name_len, inode->i_size);
 	
 		attroff(COLOR_PAIR(1));
 		dir = dir->next;
@@ -32,7 +33,7 @@ static void render_list(struct DirList * dir_list, struct Entity* active, WINDOW
 	}
 }
 
-void diplay_files(WINDOW * window) {
+void display_files(WINDOW * window) {
     struct DirList * dir_list = get_root_dir();
 
     handle_list(dir_list, window);
@@ -127,6 +128,6 @@ WINDOW * create_dir_window() {
 	wclear(mainwin);
     box(mainwin, 0, 0);
     wrefresh(mainwin);
-
+    
     return mainwin;
 }

@@ -5,28 +5,16 @@
 #include "footer.h"
 #include "file_content.h"
 #include "dir.h"
-
-
-struct DirList * get_root_dir();
-
-void handle_list(struct DirList * dir_list, WINDOW * window);
-
-void render_list(struct DirList * dir, struct Entity* active, WINDOW * window);
-
-struct DirList * switch_directory(int inode_idx);
+#include "main_window.h"
 
 void initialize();
 
 void ui() {
-	WINDOW *info_win = NULL;
-	WINDOW *mainwin = NULL;
-
+	WINDOW * mainwindow = NULL;
 	initialize();
-	mainwin = create_dir_window();
-	info_win = get_footer();
-	diplay_files(mainwin);
-	delwin(mainwin);
-	delwin(info_win);
+	mainwindow = create_main_window();
+
+	delwin(mainwindow);
     endwin();
 }
 
