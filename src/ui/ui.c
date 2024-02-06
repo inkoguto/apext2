@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include <locale.h>
 #include "entity.h"
 #include "inode.h"
 #include "footer.h"
@@ -11,6 +12,7 @@ void initialize();
 
 void ui() {
 	WINDOW * mainwindow = NULL;
+	setlocale(LC_ALL, "");
 	initialize();
 	mainwindow = create_main_window();
 
